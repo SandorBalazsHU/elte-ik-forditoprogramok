@@ -48,8 +48,7 @@ write      return Parser::TOKEN_WRITE;
 
 {NUMERIC}+                      return Parser:: TOKEN_NUMERIC;
 {LETTER}({LETTER}|{NUMERIC}|_)* return Parser:: TOKEN_IDENTIFIER;
-^#.*                            //One line COMMENT - Nothig to do.
-^#(.|\n)*#                      //Multiple line COMMENT - Nothig to do.
+#[^#]*#                         //Multiple line COMMENT - Nothig to do.
 {WHITESPACE}+                   //WHITESPACES - Nothig to do.
 
 . {

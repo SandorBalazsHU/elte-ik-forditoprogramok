@@ -135,14 +135,26 @@ out:
 ;
 
 branch:
-    TOKEN_IF expression TOKEN_THEN commands TOKEN_ENDIF
+    TOKEN_IF expression TOKEN_THEN commands else_if TOKEN_ENDIF
     {
-        std::cout << "branch -> IF expression THEN commands ENDIF" << std::endl;
+        std::cout << "branch -> IF expression THEN commands else_if ENDIF" << std::endl;
     }
 |
-    TOKEN_IF expression TOKEN_THEN commands TOKEN_ELSE commands TOKEN_ELSIF
+    TOKEN_IF expression TOKEN_THEN commands else_if TOKEN_ELSE commands TOKEN_ENDIF
     {
-        std::cout << "branch -> IF expression THEN commands ELSE commands ELSIF" << std::endl;
+        std::cout << "branch -> IF expression THEN commands else_if ELSE commands ENDIF" << std::endl;
+    }
+;
+
+else_if:
+    // empty
+    {
+        std::cout << "else_if -> epsylon" << std::endl;
+    }
+|
+    TOKEN_ELSIF expression TOKEN_THEN commands else_if
+    {
+        std::cout << "else_if -> ELSIF expression THEN commands else_if" << std::endl;
     }
 ;
 
