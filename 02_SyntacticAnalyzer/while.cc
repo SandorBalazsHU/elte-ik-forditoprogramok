@@ -1,7 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>
-#include <stdlib.h>
 #include "Parser.h"
 #include <FlexLexer.h>
 
@@ -23,8 +21,8 @@ int main( int argumentsNumber, char* arguments[] )
 {
     ifstream inputStream;
     input_handler( inputStream, argumentsNumber, arguments );
-    flexLexer = new yyFlexLexer(&inputStream, &cout);
-    Parser parser;
+    flexLexer = new yyFlexLexer( &inputStream, &cout );
+    Parser parser( inputStream );
     parser.parse();
     return 0;
 }

@@ -2,46 +2,44 @@
 
 %lsp-needed
 
-%token IDENTIFIER
-%token PROGRAM;
-%token BEGIN;
-%token END;
-%token NATURAL;
-%token BOOLEAN;
-%token TRUE;
-%token FALSE;
-%token DIV;
-%token MOD; 
-%token AND;
-%token OR;
-%token NOT;
-%token SKIP;
-%token IF;   
-%token THEN;
-%token ELSE;
-%token ELSIF;
-%token ENDIF;
-%token WHILE;
-%token DO;
-%token DONE;
-%token READ;
-%token WRITE;
+%token TOKEN_IDENTIFIER;
+%token TOKEN_PROGRAM;
+%token TOKEN_BEGIN;
+%token TOKEN_END;
+%token TOKEN_NATURAL;
+%token TOKEN_NUMERIC;
+%token TOKEN_BOOLEAN;
+%token TOKEN_TRUE;
+%token TOKEN_FALSE;
+%token TOKEN_SKIP;
+%token TOKEN_IF;   
+%token TOKEN_THEN;
+%token TOKEN_ELSE;
+%token TOKEN_ELSIF;
+%token TOKEN_ENDIF;
+%token TOKEN_WHILE;
+%token TOKEN_DO;
+%token TOKEN_DONE;
+%token TOKEN_READ;
+%token TOKEN_WRITE;
+%token TOKEN_SEMICOLN;
+%token TOKEN_SET_VALUE;
+%token TOKEN_LEFT_BRACKET;
+%token TOKEN_RIGHT_BRACKET;
 
-%token SEMICOLN;
-%token LOWER;
-%token GREATER;
-%token PLUS;
-%token MINUS;
-%token EQUAL;
-%token SET_VALUE;
-%token MULTIPLICATION;
-%token LEFT_BRACKET;
-%token RIGHT_BRACKET;
+%left TOKEN_AND;
+%left TOKEN_OR;
+%left TOKEN_NOT;
+%left TOKEN_EQUAL;
+%left TOKEN_LOWER TOKEN_GREATER;
+%left TOKEN_PLUS TOKEN_MINUS;
+%left TOKEN_DIV TOKEN_MULTIPLICATION TOKEN_MOD; 
+
 
 %%
 
 start:
-    PROGRAM IDENTIFIER declarations BEGIN commands END
+    TOKEN_PROGRAM TOKEN_IDENTIFIER declarations TOKEN_BEGIN commands TOKEN_END
     {
         std::cout << "start -> PROGRAM IDENTIFIER declarations BEGIN commands END" << std::endl;
     }
@@ -60,12 +58,12 @@ declarations:
 ;
 
 declaration:
-    NATURAL IDENTIFIER SEMICOLN
+    TOKEN_NATURAL TOKEN_IDENTIFIER TOKEN_SEMICOLN
     {
         std::cout << "declaration -> NATURAL IDENTIFIER SEMICOLN" << std::endl;
     }
 |
-    BOOLEAN IDENTIFIER SEMICOLN
+    TOKEN_BOOLEAN TOKEN_IDENTIFIER TOKEN_SEMICOLN
     {
         std::cout << "declaration -> BOOLEAN IDENTIFIER SEMICOLN" << std::endl;
     }
@@ -84,7 +82,7 @@ commands:
 ;
 
 command:
-    SKIP SEMICOLN
+    TOKEN_SKIP TOKEN_SEMICOLN
     {
         std::cout << "command -> SKIP SEMICOLN" << std::endl;
     }
@@ -116,122 +114,122 @@ command:
 ;
 
 set_value:
-    IDENTIFIER SET_VALUE expression SEMICOLN
+    TOKEN_IDENTIFIER TOKEN_SET_VALUE expression TOKEN_SEMICOLN
     {
         std::cout << "set_value -> IDENTIFIER SET_VALUE expression SEMICOLN" << std::endl;
     }
 ;
 
 in:
-    READ LEFT_BRACKET IDENTIFIER RIGHT_BRACKET SEMICOLN
+    TOKEN_READ TOKEN_LEFT_BRACKET TOKEN_IDENTIFIER TOKEN_RIGHT_BRACKET TOKEN_SEMICOLN
     {
         std::cout << "in -> READ LEFT_BRACKET IDENTIFIER RIGHT_BRACKET SEMICOLN" << std::endl;
     }
 ;
 
 out:
-    WRITE LEFT_BRACKET expression RIGHT_BRACKET SEMICOLN
+    TOKEN_WRITE TOKEN_LEFT_BRACKET expression TOKEN_RIGHT_BRACKET TOKEN_SEMICOLN
     {
         std::cout << "out -> WRITE LEFT_BRACKET expression RIGHT_BRACKET SEMICOLN" << std::endl;
     }
 ;
 
 branch:
-    IF expression THEN commands ENDIF
+    TOKEN_IF expression TOKEN_THEN commands TOKEN_ENDIF
     {
         std::cout << "branch -> IF expression THEN commands ENDIF" << std::endl;
     }
 |
-    IF expression THEN commands ELSE commands ELSIF
+    TOKEN_IF expression TOKEN_THEN commands TOKEN_ELSE commands TOKEN_ELSIF
     {
         std::cout << "branch -> IF expression THEN commands ELSE commands ELSIF" << std::endl;
     }
 ;
 
 cycle:
-    WHILE expression DO commands DONE
+    TOKEN_WHILE expression TOKEN_DO commands TOKEN_DONE
     {
         std::cout << "cycle -> WHILE expression DO commands DONE" << std::endl;
     }
 ;
 
 expression:
-    NATURAL
+    TOKEN_NUMERIC
     {
-        std::cout << "expression -> NATURAL" << std::endl;
+        std::cout << "expression -> NUMERIC" << std::endl;
     }
 |
-    TRUE
+    TOKEN_TRUE
     {
         std::cout << "expression -> TRUE" << std::endl;
     }
 |
-    FALSE
+    TOKEN_FALSE
     {
         std::cout << "expression -> FALSE" << std::endl;
     }
 |
-    IDENTIFIER
+    TOKEN_IDENTIFIER
     {
         std::cout << "expression -> IDENTIFIER" << std::endl;
     }
 |
-    expression PLUS expression
+    expression TOKEN_PLUS expression
     {
         std::cout << "expression -> expression PLUS expression" << std::endl;
     }
 |
-    expression MINUS expression
+    expression TOKEN_MINUS expression
     {
         std::cout << "expression -> expression MINUS expression" << std::endl;
     }
 |
-    expression MULTIPLICATION expression
+    expression TOKEN_MULTIPLICATION expression
     {
         std::cout << "expression -> expression MULTIPLICATION expression" << std::endl;
     }
 |
-    expression DIV expression
+    expression TOKEN_DIV expression
     {
         std::cout << "expression -> expression DIV expression" << std::endl;
     }
 |
-    expression MOD expression
+    expression TOKEN_MOD expression
     {
         std::cout << "expression -> expression MOD expression" << std::endl;
     }
 |
-    expression LOWER expression
+    expression TOKEN_LOWER expression
     {
         std::cout << "expression -> expression LOWER expression" << std::endl;
     }
 |
-    expression GREATER expression
+    expression TOKEN_GREATER expression
     {
         std::cout << "expression -> expression GREATER expression" << std::endl;
     }
 |
-    expression EQUAL expression
+    expression TOKEN_EQUAL expression
     {
         std::cout << "expression -> expression EQUAL expression" << std::endl;
     }
 |
-    expression AND expression
+    expression TOKEN_AND expression
     {
         std::cout << "expression -> expression AND expression" << std::endl;
     }
 |
-    expression OR expression
+    expression TOKEN_OR expression
     {
         std::cout << "expression -> expression OR expression" << std::endl;
     }
 |
-    NOT expression
+    TOKEN_NOT expression
     {
         std::cout << "expression -> NOT expression" << std::endl;
     }
 |
-    LEFT_BRACKET expression RIGHT_BRACKET
+    TOKEN_LEFT_BRACKET expression TOKEN_RIGHT_BRACKET
     {
         std::cout << "expression -> LEFT_BRACKET expression RIGHT_BRACKET" << std::endl;
     }

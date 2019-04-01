@@ -3,20 +3,21 @@
 
 // $insert baseclass
 #include "Parserbase.h"
-#include <iostream>
-#include <stdlib.h>
+#include "FlexLexer.h"
+#include <cstdlib>
 
 #undef Parser
 class Parser: public ParserBase
 {
         
     public:
+		Parser( std::istream & in ) : lexer( &in, &std::cerr ) {}
         int parse();
 
     private:
+        yyFlexLexer lexer;
         void error(char const *msg);    // called on (syntax) errors
-        int lex();                      // returns the next token from the
-                                        // lexical scanner. 
+        int lex();                      // returns the next token from the lexical scanner. 
         void print();                   // use, e.g., d_token, d_loc
 
     // support functions for parse():
@@ -24,18 +25,8 @@ class Parser: public ParserBase
         void errorRecovery();
         int lookup(bool recovery);
         void nextToken();
-
+        void print__();
+        void exceptionHandler__(std::exception const &exc);
 };
 
-inline void Parser::error(char const *msg)
-{
-    std::cerr << d_loc__.first_line << ".: Syntactic error!" << std::endl;
-    exit(1);
-}
-
-// $insert lex
-inline void Parser::print()      // use d_token, d_loc
-{
-
-}
 #endif
