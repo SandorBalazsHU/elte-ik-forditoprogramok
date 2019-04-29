@@ -35,12 +35,12 @@
 %left TOKEN_DIV TOKEN_MULTIPLICATION TOKEN_MOD; 
 
 %union {
-	std::string* text;
-	type* typ;
+	std::string* txt;
+	types* typ;
 }
 
-%token <text> TOKEN_IDENTIFIER;
-%type <typ> var_type;
+%token <txt> TOKEN_IDENTIFIER;
+%type <typ> variable_type;
 %type <typ> constant;
 %type <typ> expression;
 
@@ -53,32 +53,32 @@ start:
     }
 ;
 
-var_type:
+variable_type:
 	TOKEN_NATURAL
 	{
-		$$ = new type(natural_type);
+		$$ = new types(natural_type);
     }
 |
 	TOKEN_BOOLEAN
 	{
-		$$ = new type(boolean_type);
+		$$ = new types(boolean_type);
     }
 ;
 
 constant:
 	TOKEN_TRUE
 	{
-		$$ = new type(boolean_type);
+		$$ = new types(boolean_type);
     }
 |
 	TOKEN_FALSE
 	{
-		$$ = new type(boolean_type);
+		$$ = new types(boolean_type);
     }
 |
 	TOKEN_NUMERIC
 	{
-		$$ = new type(natural_type);
+		$$ = new types(natural_type);
     }
 ;
 
@@ -89,7 +89,7 @@ declarations:
 ;
 
 declaration:
-    var_type TOKEN_IDENTIFIER TOKEN_SEMICOLN
+    variable_type TOKEN_IDENTIFIER TOKEN_SEMICOLN
     {
         if(table.count(*$2) > 0){
 			std::stringstream ss;
@@ -102,7 +102,7 @@ declaration:
 		delete $1;
     }
 |
-    var_type TOKEN_IDENTIFIER TOKEN_SEMICOLN
+    variable_type TOKEN_IDENTIFIER TOKEN_SEMICOLN
     {
 		if(table.count(*$2) > 0){
 			std::stringstream ss;
@@ -221,7 +221,7 @@ cycle:
 expression:
     constant
     {
-       	$$ = new type(*$1);
+       	$$ = new types(*$1);
 		delete $1; 
     }
 |
@@ -233,7 +233,7 @@ expression:
 			ss << "Nem deklaralt valtozo: " << *$1 << ".\n" << std::endl;
 			error( ss.str().c_str() );
 		}
-		$$ = new type(table[*$1].var_type);
+		$$ = new types(table[*$1].var_type);
 		delete $1;
     }
 |
@@ -244,7 +244,7 @@ expression:
 			ss << "Tipushibas 'PLUSZ' operator" << std::endl;
 			error( ss.str().c_str() );
 		}
-		$$ = new type(*$1);
+		$$ = new types(*$1);
 		delete $1; delete $3;
     }
 |
@@ -255,7 +255,7 @@ expression:
 			ss << "Tipushibas 'MINUS' operator" << std::endl;
 			error( ss.str().c_str() );
 		}
-		$$ = new type(*$1);
+		$$ = new types(*$1);
 		delete $1; delete $3;
     }
 |
@@ -266,7 +266,7 @@ expression:
 			ss << "Tipushibas 'CSILLAG' operator" << std::endl;
 			error( ss.str().c_str() );
 		}
-		$$ = new type(*$1);
+		$$ = new types(*$1);
 		delete $1; delete $3;
     }
 |
@@ -277,7 +277,7 @@ expression:
 			ss << "Tipushibas 'PER' operator" << std::endl;
 			error( ss.str().c_str() );
 		}
-		$$ = new type(*$1);
+		$$ = new types(*$1);
 		delete $1; delete $3;
     }
 |
@@ -288,7 +288,7 @@ expression:
 			ss << "Tipushibas 'SZAZALEK' operator" << std::endl;
 			error( ss.str().c_str() );
 		}
-		$$ = new type(*$1);
+		$$ = new types(*$1);
 		delete $1; delete $3;
     }
 |
@@ -299,7 +299,7 @@ expression:
 			ss << "Tipushibas 'KISEBB' operator" << std::endl;
 			error( ss.str().c_str() );
 		}
-		$$ = new type(boolean_type);
+		$$ = new types(boolean_type);
 		delete $1; delete $3;
     }
 |
@@ -310,7 +310,7 @@ expression:
 			ss << "Tipushibas 'NAGYOBB' operator" << std::endl;
 			error( ss.str().c_str() );
 		}
-		$$ = new type(boolean_type);
+		$$ = new types(boolean_type);
 		delete $1; delete $3;
     }
 |
@@ -321,7 +321,7 @@ expression:
 			ss << "Tipushibas 'EGYENLO' operator" << std::endl;
 			error( ss.str().c_str() );
 		}
-		$$ = new type(boolean_type);
+		$$ = new types(boolean_type);
 		delete $1; delete $3;
     }
 |
@@ -332,7 +332,7 @@ expression:
 			ss << "Tipushibas 'ES' operator! " << std::endl;
 			error( ss.str().c_str() );
 		}
-		$$ = new type(*$1);
+		$$ = new types(*$1);
 		delete $1; delete $3;
     }
 |
@@ -343,7 +343,7 @@ expression:
 			ss << "Tipushibas 'VAGY' operator! " << std::endl;
 			error( ss.str().c_str() );
 		}
-		$$ = new type(*$1);
+		$$ = new types(*$1);
 		delete $1; delete $3;
     }
 |
@@ -354,13 +354,13 @@ expression:
 			ss << "Tipushibas 'NEM' operator" << std::endl;
 			error( ss.str().c_str() );
 		}
-		$$ = new type(*$2);
+		$$ = new types(*$2);
 		delete $2;
     }
 |
     TOKEN_LEFT_BRACKET expression TOKEN_RIGHT_BRACKET
     {
-        $$ = new type(*$2);
+        $$ = new types(*$2);
 		delete $2;
     }
 ;

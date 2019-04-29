@@ -11,9 +11,8 @@ inline void Parser::error(char const *msg)
 // $insert lex
 inline int Parser::lex()
 {
-    int returnValue = flexLexer->yylex();
-    d_loc__.first_line = flexLexer->lineno();
-    return returnValue;
+    d_loc__.first_line = lexer.lineno();
+    return lexer.yylex();
 }
 
 inline void Parser::print()         
