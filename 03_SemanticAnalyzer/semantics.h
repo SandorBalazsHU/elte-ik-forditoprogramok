@@ -3,7 +3,7 @@
 #include <map>
 #include <sstream>
 
-enum type {natural,numeric};
+enum type {natural_type, boolean_type};
 
 struct var_data {
 	int decl_row;
