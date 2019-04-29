@@ -26,9 +26,6 @@
 %token TOKEN_LEFT_BRACKET;
 %token TOKEN_RIGHT_BRACKET;
 
-%token <text> TOKEN_IDENTIFIER;
-%token TOKEN_CONSTANT;
-
 %left TOKEN_AND;
 %left TOKEN_OR;
 %left TOKEN_NOT;
@@ -37,14 +34,15 @@
 %left TOKEN_PLUS TOKEN_MINUS;
 %left TOKEN_DIV TOKEN_MULTIPLICATION TOKEN_MOD; 
 
-%type <T> VAR_TYPE;
-%type <T> CONSTANT;
-%type <T> _EXPRESSION_;
-
 %union {
 	std::string* text;
-	type* T;
+	type* typ;
 }
+
+%token <text> TOKEN_IDENTIFIER;
+%type <typ> var_type;
+%type <typ> constant;
+%type <typ> expression;
 
 %%
 
@@ -175,7 +173,7 @@ out:
 branch:
     TOKEN_IF expression TOKEN_THEN commands else_if TOKEN_ENDIF
     {
-        if(*$2 != logikai){
+        if(*$2 != boolean_type){
 			std::stringstream ss;
 			ss << "Tipushibas elagazas-feltetel" << std::endl;
 			error( ss.str().c_str() );
@@ -185,7 +183,7 @@ branch:
 |
     TOKEN_IF expression TOKEN_THEN commands else_if TOKEN_ELSE commands TOKEN_ENDIF
     {
-		if(*$2 != logikai){
+		if(*$2 != boolean_type){
 			std::stringstream ss;
 			ss << "Tipushibas elagazas-feltetel" << std::endl;
 			error( ss.str().c_str() );
@@ -199,7 +197,7 @@ else_if:
 |
     TOKEN_ELSIF expression TOKEN_THEN commands else_if
     {
-		if(*$2 != logikai){
+		if(*$2 != boolean_type){
 			std::stringstream ss;
 			ss << "Tipushibas elagazas-feltetel" << std::endl;
 			error( ss.str().c_str() );
@@ -211,7 +209,7 @@ else_if:
 cycle:
     TOKEN_WHILE expression TOKEN_DO commands TOKEN_DONE
     {
-        if(*$3 != logikai){
+        if(*$3 != boolean_type){
 			std::stringstream ss;
 			ss << "Tipushibas ciklusfeltetel!" << std::endl;
 			error( ss.str().c_str() );
@@ -241,7 +239,7 @@ expression:
 |
     expression TOKEN_PLUS expression
     {
-		if(*$1 != egesz || *$3 != egesz) {
+		if(*$1 != natural_type || *$3 != natural_type) {
 			std::stringstream ss;
 			ss << "Tipushibas 'PLUSZ' operator" << std::endl;
 			error( ss.str().c_str() );
@@ -252,7 +250,7 @@ expression:
 |
     expression TOKEN_MINUS expression
     {
-		if(*$1 != egesz || *$3 != egesz) {
+		if(*$1 != natural_type || *$3 != natural_type) {
 			std::stringstream ss;
 			ss << "Tipushibas 'MINUS' operator" << std::endl;
 			error( ss.str().c_str() );
@@ -263,7 +261,7 @@ expression:
 |
     expression TOKEN_MULTIPLICATION expression
     {
-		if(*$1 != egesz || *$3 != egesz) {
+		if(*$1 != natural_type || *$3 != natural_type) {
 			std::stringstream ss;
 			ss << "Tipushibas 'CSILLAG' operator" << std::endl;
 			error( ss.str().c_str() );
@@ -274,7 +272,7 @@ expression:
 |
     expression TOKEN_DIV expression
     {
-		if(*$1 != egesz || *$3 != egesz) {
+		if(*$1 != natural_type || *$3 != natural_type) {
 			std::stringstream ss;
 			ss << "Tipushibas 'PER' operator" << std::endl;
 			error( ss.str().c_str() );
@@ -285,7 +283,7 @@ expression:
 |
     expression TOKEN_MOD expression
     {
-		if(*$1 != egesz || *$3 != egesz) {
+		if(*$1 != natural_type || *$3 != natural_type) {
 			std::stringstream ss;
 			ss << "Tipushibas 'SZAZALEK' operator" << std::endl;
 			error( ss.str().c_str() );
@@ -296,23 +294,23 @@ expression:
 |
     expression TOKEN_LOWER expression
     {
-		if(*$1 != egesz || *$3 != egesz) {
+		if(*$1 != natural_type || *$3 != natural_type) {
 			std::stringstream ss;
 			ss << "Tipushibas 'KISEBB' operator" << std::endl;
 			error( ss.str().c_str() );
 		}
-		$$ = new type(logikai);
+		$$ = new type(boolean_type);
 		delete $1; delete $3;
     }
 |
     expression TOKEN_GREATER expression
     {
-		if(*$1 != egesz || *$3 != egesz) {
+		if(*$1 != natural_type || *$3 != natural_type) {
 			std::stringstream ss;
 			ss << "Tipushibas 'NAGYOBB' operator" << std::endl;
 			error( ss.str().c_str() );
 		}
-		$$ = new type(logikai);
+		$$ = new type(boolean_type);
 		delete $1; delete $3;
     }
 |
@@ -323,13 +321,13 @@ expression:
 			ss << "Tipushibas 'EGYENLO' operator" << std::endl;
 			error( ss.str().c_str() );
 		}
-		$$ = new type(logikai);
+		$$ = new type(boolean_type);
 		delete $1; delete $3;
     }
 |
     expression TOKEN_AND expression
     {
-		if(*$1 != logikai || *$3 != logikai) {
+		if(*$1 != boolean_type || *$3 != boolean_type) {
 			std::stringstream ss;
 			ss << "Tipushibas 'ES' operator! " << std::endl;
 			error( ss.str().c_str() );
@@ -340,7 +338,7 @@ expression:
 |
     expression TOKEN_OR expression
     {
-		if(*$1 != logikai || *$3 != logikai) {
+		if(*$1 != boolean_type || *$3 != boolean_type) {
 			std::stringstream ss;
 			ss << "Tipushibas 'VAGY' operator! " << std::endl;
 			error( ss.str().c_str() );
@@ -351,7 +349,7 @@ expression:
 |
     TOKEN_NOT expression
     {
-		if(*$2 != logikai) {
+		if(*$2 != boolean_type) {
 			std::stringstream ss;
 			ss << "Tipushibas 'NEM' operator" << std::endl;
 			error( ss.str().c_str() );

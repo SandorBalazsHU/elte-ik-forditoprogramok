@@ -8,12 +8,12 @@ using namespace std;
 
 yyFlexLexer *flexLexer;
 
-/*int Parser::lex()
+int Parser::lex()
 {
     int returnValue = flexLexer->yylex();
     d_loc__.first_line = flexLexer->lineno();
     return returnValue;
-}*/
+}
 
 void input_handler( ifstream& inputStream, int argumentsNumber, char* arguments[] );
 
