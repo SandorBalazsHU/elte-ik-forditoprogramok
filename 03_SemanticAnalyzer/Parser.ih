@@ -4,7 +4,7 @@
 
 inline void Parser::error(char const *msg)
 {
-    std::cerr << "Syntactic error on line:" << d_loc__.first_line << ": " << msg << std::endl; 
+    std::cerr << "Semantic error on line:" << d_loc__.first_line << ": " << msg << std::endl; 
     exit(1);
 }
 

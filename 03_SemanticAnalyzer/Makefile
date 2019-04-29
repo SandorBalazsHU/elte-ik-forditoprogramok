@@ -1,4 +1,4 @@
-COMPILERNAME=while
+COMPILERNAME=while_lang
 SCANNERTEST=scantest
 
 all: $(COMPILERNAME)

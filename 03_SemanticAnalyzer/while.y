@@ -91,20 +91,8 @@ declarations:
 declaration:
     variable_type TOKEN_IDENTIFIER TOKEN_SEMICOLN
     {
-        if(table.count(*$2) > 0){
-			std::stringstream ss;
-			ss << "Ujradeklaralt valtozo: "<< *$2<<".\n"
-				<< "Korabbi deklaracio sora: " << table[*$2].decl_row << std::endl;
-			error(ss.str().c_str());
-		}
-		table[*$2] = var_data(d_loc__.first_line, *$1);
-		delete $2;
-		delete $1;
-    }
-|
-    variable_type TOKEN_IDENTIFIER TOKEN_SEMICOLN
-    {
-		if(table.count(*$2) > 0){
+        if(table.count(*$2) > 0)
+		{
 			std::stringstream ss;
 			ss << "Ujradeklaralt valtozo: "<< *$2<<".\n"
 				<< "Korabbi deklaracio sora: " << table[*$2].decl_row << std::endl;
@@ -157,7 +145,8 @@ set_value:
 in:
     TOKEN_READ TOKEN_LEFT_BRACKET TOKEN_IDENTIFIER TOKEN_RIGHT_BRACKET TOKEN_SEMICOLN
     {
-        if(table.count(*$3) == 0){
+        if(table.count(*$3) == 0)
+		{
 			std::stringstream ss;
 			ss << "Nem deklaralt valtozo: " << *$3 << ".\n" << std::endl;
 			error( ss.str().c_str() );
@@ -168,6 +157,17 @@ in:
 
 out:
     TOKEN_WRITE TOKEN_LEFT_BRACKET expression TOKEN_RIGHT_BRACKET TOKEN_SEMICOLN
+|
+	TOKEN_WRITE TOKEN_LEFT_BRACKET TOKEN_IDENTIFIER TOKEN_RIGHT_BRACKET TOKEN_SEMICOLN
+	{
+        if(table.count(*$3) == 0)
+		{
+			std::stringstream ss;
+			ss << "Nem deklaralt valtozo: " << *$3 << ".\n" << std::endl;
+			error( ss.str().c_str() );
+		}
+		delete $3;
+    }
 ;
 
 branch:
@@ -209,12 +209,12 @@ else_if:
 cycle:
     TOKEN_WHILE expression TOKEN_DO commands TOKEN_DONE
     {
-        if(*$3 != boolean_type){
+        if(*$2 != boolean_type){
 			std::stringstream ss;
 			ss << "Tipushibas ciklusfeltetel!" << std::endl;
 			error( ss.str().c_str() );
 		}
-		delete $3;
+		delete $2;
     }
 ;
 
